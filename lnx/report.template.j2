@@ -1,0 +1,14 @@
+
+Hostname,Ipv6before,Ipv6after,Comment
+{% for host in groups['all'] %}
+{% with host_data = hostvars[host] %}
+{% if host_data.ipv6_parameters_before is defined and host_data.ipv6_parameters_after is defined  %}
+{{host_data.inventory_hostname}},{{ host_data.ipv6_parameters_before.stdout_lines | join('/') }},{{ host_data.ipv6_parameters_after.stdout_lines | join('/') }},Applied
+{% elif host_data.ipv6_parameters_before is defined %}
+{{host_data.inventory_hostname}},{{ host_data.ipv6_parameters_before.stdout_lines | join('/') }},,No Applied
+{% else %}
+{{host_data.inventory_hostname}},,,Bad
+{% endif %}
+{% endwith %}
+{% endfor %}
+

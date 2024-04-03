@@ -7,6 +7,10 @@
      register: ipv6_parameters_before
      ignore_errors: true
 
+   - name: Debugging
+     debug:
+       var: ipv6_parameters_before
+
    - name: Insert Lines into /etc/sysctl.conf and Apply Changes
      block: 
         - name: Insert Lines into sysctl.conf
@@ -19,5 +23,17 @@
           shell: sysctl -p
           register: ipv6_parameters_after
 
+        - name: Debugging
+          debug:
+            var: ipv6_parameters_after
+
      when: ipv6_parameters_before.stdout_lines | length > 0
      ignore_errors: true
+
+- name: Creating Report .CSV
+  hosts: localhost
+  tasks:
+   - name: Using Template with Jinja 2
+     template:
+       src: ./report.template.j2
+       dest: ./report.csv
